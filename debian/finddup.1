@@ -45,20 +45,6 @@ can optional hardlink such files to save space.
 
 Files of size 0 will not be reported or hardlinked as this might give problems later.
 
-This is a complete rewrite of the 
-.B finddup 
-in perl to handle several issues:
-
-  \- Allow spaces and other characters in filenames
-
-  \- be faster
-
-  \- include nodup in same script
-
-  \- Handle files that already have other hardlinks in the same tree
-
-  \- Several improvements
-
 If run as nodup or nodup.pl the script will act as if started with options
 \-\-link \-\-oldresult
 

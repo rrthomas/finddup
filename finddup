@@ -173,32 +173,6 @@ finddup can optional hardlink such files to save space.
 Files of size 0 will not be reported or hardlinked as this might give problems
 later.
 
-This is a complete rewrite of the finddup in perl to handle several issues:
-
-=over
-
-=item
-
-Allow spaces and other characters in filenames
-
-=item
-
-be faster
-
-=item
-
-include nodup in same script
-
-=item
-
-Handle files that already have other hardlinks in the same tree
-
-=item
-
-Several improvements
-
-=back
-
 If run as nodup or nodup.pl the script will act as if started with options --link
 --oldresult
 
