@@ -4,6 +4,8 @@ This package was put together by Michael Meskes <meskes@debian.org> from
 sources obtained from gd.cs.CSUFresno.EDU:/pub/sun4bin/src, and subsequently
 maintained by Heiko Schlittermann <heiko@lotte.sax.de>.
 
+finddup was rewritten by Klaus Ethgen <Klaus@Ethgen.de> in 2005.
+
 You may use, distribute and copy this program according to the terms of the
 GNU General Public License version 2 or later.
 
