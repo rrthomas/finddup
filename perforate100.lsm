@@ -1,0 +1,15 @@
+
+Begin3
+Title:		perforate - make holes in files (and more)
+Version:	1.00 (April 1995)
+Entered-date:	04/08/95
+Description:	Save disk space by making holes in files with 0 runs;
+		merging duplicate files and stripping programs that are
+		installed without getting stripped.
+Keywords:	disk space,filesystem holes,duplicate files,strip
+Author: 	Oleg Kibirev <oleg@gd.cs.CSUFresno.EDU>
+Maintained-by:	ditto
+Primary-site:	gd.cs.CSUFresno.EDU /pub/sun4bin/src
+				10K perforate100.tgz
+Copying-policy:	GPL
+End
