@@ -137,7 +137,7 @@ sub insert_md5
    }
    else
    {
-      warn "Cannot open File '" . $file->[4]->[0] . "'";
+      warn "Cannot open file '" . $file->[4]->[0] . "'";
    }
 }
 
@@ -164,13 +164,12 @@ B<finddup> [I<options>...]
 
 =head1 DESCRIPTION
 
-finddup search the working directory and all files below on the same partition
+finddup searches the working directory and all files below on the same partition
 for duplicate files.
 
-finddup can optional hardlink such files to save space.
+finddup can optionally hardlink such files to save space.
 
-Files of size 0 will not be reported or hardlinked as this might give problems
-later.
+Files of size 0 will not be reported or hardlinked as this might cause problems.
 
 If run as nodup or nodup.pl the script will act as if started with options --link
 --oldresult
