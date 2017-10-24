@@ -34,12 +34,9 @@ $opt->{link} = 1 if not exists $opt->{link} and $0 =~ /^(.*\/)?nodup(.pl)?$/;
 $opt->{oldresult} = 1 if not exists $opt->{oldresult} and $0 =~ /^(.*\/)?nodup(.pl)?$/;
 
 my @dir = @{$opt->{dir}} if ($opt->{dir});
-if (scalar(@dir) eq 0) {
-	push @dir, '.';
-}
+push @dir, '.' if scalar(@dir) eq 0;
 
-if ($opt->{oldresult})
-{
+if ($opt->{oldresult}) {
    my $md5 = 0; # This is not really necessary in this mode, so make this faster
    while (<>)
    {
@@ -50,9 +47,7 @@ if ($opt->{oldresult})
       my @files = split(/' '/);
       $md5list{$md5++} = [[$size, 0, 0, 0, \@files]];
    }
-}
-else
-{
+} else {
    # Traverse desired filesystems
    File::Find::find({wanted => \&wanted}, @dir);
 
@@ -71,39 +66,27 @@ else
 }
 
 # Now we can output doubles sorted by size
-foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list))
-{
+foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)) {
    next unless @{$md5list{$_}} > 1 or $opt->{oldresult}; # This file is single
    my $size = $md5list{$_}->[0]->[0];
-   if ($size) # Do not output empty files
-   {
-      if ($opt->{link})
-      {
+   if ($size) { # Do not output empty files
+      if ($opt->{link}) {
 	 my $reffile = shift @{$md5list{$_}->[0]->[4]}; # Remove the first file to not unlink them
 	 print "Length: $size Files:\t$reffile\n" if $opt->{verbose};
-	 foreach (@{$md5list{$_}})
-	 {
-	    foreach (@{$_->[4]})
-	    {
+	 foreach (@{$md5list{$_}}) {
+	    foreach (@{$_->[4]}) {
 	       print "\t\t\t$_\n" if $opt->{verbose};
-	       unless ($opt->{noaction})
-	       {
+	       unless ($opt->{noaction}) {
 		  unlink $_ || die "Error deleting '$_'";
 		  link $reffile, $_ || die "Error in ln '$reffile' '$_'";
 	       }
 	    }
 	 }
 	 print "\n" if $opt->{verbose};
-      }
-      else
-      {
-	 print "$size" unless $opt->{quiet};
-	 foreach (@{$md5list{$_}})
-	 {
-	    foreach (@{$_->[4]})
-	    {
-	       print " '$_'" unless $opt->{quiet};
-	    }
+      } elsif (!$opt->{quiet}) {
+         my @output;
+	 foreach (@{$md5list{$_}}) {
+            push @output, $_ foreach @{$_->[4]};
 	 }
 	 print "\n" unless $opt->{quiet};
       }
@@ -113,12 +96,10 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
 exit 0;
 
 
-sub wanted
-{
+sub wanted {
    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size);
 
-   if ((($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size) = lstat($_)) && !($File::Find::prune |= ($dev != $File::Find::topdev)) && -f _)
-   {
+   if ((($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size) = lstat($_)) && !($File::Find::prune |= ($dev != $File::Find::topdev)) && -f _) {
       $filelist{$ino} = [$size, $mode, $uid, $gid, []] unless exists $filelist{$ino};
       push @{$filelist{$ino}->[4]}, $name;
    }
@@ -127,16 +108,13 @@ sub wanted
 sub insert_md5
 {
    my $file = shift;
-   if (open(IN, "<", $file->[4]->[0]))
-   {
+   if (open(IN, "<", $file->[4]->[0])) {
       my $md5 = Digest::MD5->new->addfile(*IN)->hexdigest;
       $md5 .= "\t".$file->[1]."\t".$file->[2]."\t".$file->[3] unless $opt->{'ignore-perms'};
       close IN;
       $md5list{$md5} = [] unless exists $md5list{$md5};
       push @{$md5list{$md5}}, $file;
-   }
-   else
-   {
+   } else {
       warn "Cannot open file '" . $file->[4]->[0] . "'";
    }
 }
