@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 #
-# finddup 2.0 - find identical files and do somethink with it.
+# finddup 2.0 - find identical files and do something with them.
 #
 
 use strict;
@@ -17,14 +17,15 @@ use vars qw(*name *dir *prune);
 *dir    = *File::Find::dir;
 *prune  = *File::Find::prune;
 
-use vars qw($RCS_VERSION $VERSION $opt %filelist %md5list);
+use vars qw($RCS_VERSION $VERSION @dir $opt %filelist %md5list);
 
 sub wanted;
+sub insert_md5;
 
-$RCS_VERSION = '$Id: finddup,v 2.2 2005/02/06 12:21:02 klaus Exp $';
-($VERSION = '$Revision: 2.2 $') =~ s/^\D*([\d.]*)\D*$/$1/;
+$RCS_VERSION = '$Id: finddup,v 2.3 2005/02/06 18:57:42 klaus Exp $';
+($VERSION = '$Revision: 2.3 $') =~ s/^\D*([\d.]*)\D*$/$1/;
 
-GetOptions($opt = {}, qw(help|h man version noaction|n verbose|v quiet|q link|l oldresult|o)) || pod2usage 2;
+GetOptions($opt = {}, qw(help|h man version noaction|n ignore-perms|i verbose|v quiet|q link|l oldresult|o dir=s@)) || pod2usage 2;
 pod2usage(1) if $opt->{help};
 pod2usage(-exitstatus => 0, -verbose => 2) if $opt->{man};
 if ($opt->{version}) { print "Version: $VERSION\n"; exit 0; }
@@ -33,8 +34,14 @@ $opt->{verbose} = 1 if not exists $opt->{verbose} and $opt->{noaction};
 $opt->{link} = 1 if not exists $opt->{link} and $0 =~ /^(.*\/)?nodup(.pl)?$/;
 $opt->{oldresult} = 1 if not exists $opt->{oldresult} and $0 =~ /^(.*\/)?nodup(.pl)?$/;
 
+my @dir = @{$opt->{dir}} if ($opt->{dir});
+if (scalar(@dir) eq 0) {
+	push @dir, '.';
+}
+
 if ($opt->{oldresult})
 {
+   my $md5 = 0; # This is not really necessary in this mode, so make this faster
    while (<>)
    {
       chomp;
@@ -42,43 +49,45 @@ if ($opt->{oldresult})
       my $size = $1;
       s/'$//;
       my @files = split(/' '/);
-      open IN, "<", $files[0];
-      my $md5 = Digest::MD5->new->addfile(*IN)->hexdigest;
-      close IN;
-      $md5list{$md5} = [[$size, \@files]];
+      # Patch by Philipp Matthias Hahn <pmhahn@debian.org>
+      # http://bugs.debian.org/356515
+      # $md5list{$md5++} = [[$size, \@files]];
+      $md5list{$md5++} = [[$size, 0, 0, 0, \@files]];
    } # while (<>)
 } # if ($opt->{oldresult})
 else
 {
    # Traverse desired filesystems
-   File::Find::find({wanted => \&wanted}, '.');
+   File::Find::find({wanted => \&wanted}, @dir);
 
-   # Now calculate all md5sums. Afterwards %filelist can be freed.
-   foreach (sort {$a->[1]->[0] cmp $b->[1]->[0]} values(%filelist))
+   my ($prev, $prev2) = ([-1], [-2]);
+
+   # Now calculate md5sums for each file that has another file of the same
+   # size. Afterwards %filelist can be freed.
+   foreach (sort {$a->[0] cmp $b->[0]} values(%filelist))
    {
-      open IN, "<", $_->[1]->[0];
-      my $md5 = Digest::MD5->new->addfile(*IN)->hexdigest;
-      close IN;
-      $md5list{$md5} = [] unless exists $md5list{$md5};
-      push @{$md5list{$md5}}, $_;
-   }
+      insert_md5($prev) if $_->[0] == $prev->[0] || $prev->[0] == $prev2->[0];
+      $prev2 = $prev;
+      $prev = $_;
+   } # foreach (sort {$a->[1]->[0] cm...
+   insert_md5($prev) if $prev->[0] == $prev2->[0];
    %filelist = ();
 } # if ($opt->{oldresult}) { ... }...
 
 # Now we can output doubles sorted by size
 foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list))
 {
-   next unless @{$md5list{$_}} > 1; # This file is single
+   next unless @{$md5list{$_}} > 1 or $opt->{oldresult}; # This file is single
    my $size = $md5list{$_}->[0]->[0];
    if ($size) # Do not output empty files
    {
       if ($opt->{link})
       {
-	 my $reffile = shift @{$md5list{$_}->[0]->[1]}; # Remove the first file to not unlink them
+	 my $reffile = shift @{$md5list{$_}->[0]->[4]}; # Remove the first file to not unlink them
 	 print "Länge: $size Files:\t$reffile\n" if $opt->{verbose};
 	 foreach (@{$md5list{$_}})
 	 {
-	    foreach (@{$_->[1]})
+	    foreach (@{$_->[4]})
 	    {
 	       print "\t\t\t$_\n" if $opt->{verbose};
 	       unless ($opt->{noaction})
@@ -95,7 +104,7 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
 	 print "$size" unless $opt->{quiet};
 	 foreach (@{$md5list{$_}})
 	 {
-	    foreach (@{$_->[1]})
+	    foreach (@{$_->[4]})
 	    {
 	       print " '$_'" unless $opt->{quiet};
 	    }
@@ -114,8 +123,25 @@ sub wanted
 
    if ((($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size) = lstat($_)) && !($File::Find::prune |= ($dev != $File::Find::topdev)) && -f _)
    {
-      $filelist{$ino} = [$size, []] unless exists $filelist{$ino};
-      push @{$filelist{$ino}->[1]}, $name;
+      $filelist{$ino} = [$size, $mode, $uid, $gid, []] unless exists $filelist{$ino};
+      push @{$filelist{$ino}->[4]}, $name;
+   }
+}
+
+sub insert_md5
+{
+   my $file = shift;
+   if (open(IN, "<", $file->[4]->[0]))
+   {
+      my $md5 = Digest::MD5->new->addfile(*IN)->hexdigest;
+      $md5 .= "\t".$file->[1]."\t".$file->[2]."\t".$file->[3] unless $opt->{'ignore-perms'};
+      close IN;
+      $md5list{$md5} = [] unless exists $md5list{$md5};
+      push @{$md5list{$md5}}, $file;
+   }
+   else
+   {
+      warn "Cannot open File '" . $file->[4]->[0] . "'";
    }
 }
 
@@ -123,7 +149,7 @@ __END__
 
 =head1 NAME
 
-finddup - Find identical files and do somethink with it
+finddup - Find identical files and do something with them
 
 =head1 SYNOPSIS
 
@@ -135,8 +161,10 @@ B<finddup> [I<options>...]
  -n, --noaction         do just nothing, just print out (implies -v)
  -v, --verbose          just what the name says
  -q, --quiet            be quiet
- -l, --link		link the identical files together
- -o, --oldresult	Use the old output of this script
+ -l, --link	        link the identical files together
+ -o, --oldresult        Use the old output of this script
+ -i, --ignore-perms     Don't check that file owner and permissions match
+ -d, --dir              Define the dir to check (you may specify more than one)
 
 =head1 DESCRIPTION
 
@@ -166,15 +194,15 @@ include nodup in same script
 
 =item
 
-Handle if the files allready have other hardlinks to it in the same tree
+Handle files that already have other hardlinks in the same tree
 
 =item
 
-Several improbvements
+Several improvements
 
 =back
 
-If started as nodup or nodup.pl the script will act like started with optiones --link and
+If started as nodup or nodup.pl the script will act like started with options --link and
 --oldresult
 
 =head1 COPYRIGHT
@@ -204,6 +232,12 @@ S<Klaus Ethgen E<lt>Klaus@Ethgen.de<gt>>
 =head1 HISTORY
 
  $Log: finddup,v $
+ Revision 2.3  2005/02/06 18:57:42  klaus
+ * Make --oldresult faster by not calculating the md5sum again
+ * Fix a but that with --oldresult no links will be done cause the internal
+   datastructure
+ * Do handle errors in open for md5sum calculation
+
  Revision 2.2  2005/02/06 12:21:02  klaus
  Little but important bug in link routine.
 

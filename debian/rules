@@ -1,0 +1,48 @@
+#!/usr/bin/make -f
+
+#export DH_COMPAT=5
+
+CFLAGS := -O2 -Wall
+ifneq ($(findstring debug,$(DEB_BUILD_OPTIONS)),)
+CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+INSTALL_PROGRAM += -s
+endif
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean build.stamp zum
+
+build: build.stamp
+build.stamp:
+	dh_testdir
+	$(MAKE) CFLAGS="$(CFLAGS)"
+	> $@
+
+binary: binary-arch binary-indep
+
+binary-arch: build
+	dh_testdir
+	dh_testroot
+	dh_clean
+	dh_installdirs usr/bin
+	install finddup findstrip zum debian/perforate/usr/bin
+	dh_installdocs README.perforate
+	dh_installman debian/*.1
+	dh_link usr/bin/finddup usr/bin/nodup
+	dh_link usr/share/man/man1/finddup.1.gz usr/share/man/man1/nodup.1.gz
+	dh_installchangelogs
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-indep: build
+
+.PHONY: clean build binary binary-arch binary-indep

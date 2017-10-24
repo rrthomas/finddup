@@ -1,0 +1,23 @@
+.TH ZUM 1 "April 16, 2001" "Debian Project" "Debian Manual"
+.SH NAME
+zum \- free disk space by making holes in files
+.SH SYNOPSIS
+.B zum
+[\fIFILE\fR]...
+.SH DESCRIPTION
+.B zum
+reads a files list on the command line and attempts to perforate these files.
+Perforation means, that series of `0' bytes are replaced by
+.BR lseek (2)s,
+thus giving the file system a chance of not allocating real disk space for
+those bytes.
+.SH EXAMPLE
+.IP
+.B find . -type f -print0 | xargs -0 zum
+.PP
+If you zum under /boot, where your kernel image lives, your system will become
+unbootable unless you run lilo again.
+.SH AUTHOR
+Oleg Kibirev <oleg@gd.cs.CSUFresno.edu>.
+.PP
+Manual page by Heiko Schlittermann <heiko@lotte.sax.de>.

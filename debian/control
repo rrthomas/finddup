@@ -1,0 +1,20 @@
+Source: perforate
+Section: utils
+Priority: optional
+Maintainer: Amaya Rodrigo Sastre <amaya@debian.org>
+Uploaders: Hector Garcia <hector@debian.org>
+Standards-Version: 3.9.8
+Build-Depends: debhelper (>= 10)
+Homepage: http://perforate-linux.sf.net
+
+Package: perforate
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Utilities to save disk space
+ GNU cp used to detect files that contain 0-filled holes and save disk space
+ by skipping them with lseek when writing a file and thus not allocating
+ disk blocks. Unfortunately it does no longer. So here is program to make
+ holes in existing files.
+ .
+ Also there are some scripts that help cleaning up the hard disk
+ (finding duplicated and/or unstripped files).

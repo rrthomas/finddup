@@ -1,0 +1,21 @@
+.TH FINDSTRIP 1 "April 16, 2001" "Debian Project" "Debian Manual"
+.SH NAME
+findstrip \- find programs that are not stripped
+.SH SYNOPSIS
+.B findstrip
+.SH DESCRIPTION
+.B findstrip
+searches (starting point is the current directory, doesn't cross device
+boundaries) unstripped files.  Files are considered unstripped, if output of
+.BR file (1)
+contains the string "no .*strip".
+.PP
+The output is a list of unstripped files, line by line.
+.SH "SEE ALSO"
+.BR zum (1),
+.BR nodup (1),
+.BR finddup (1).
+.SH AUTHOR
+Oleg Kibirev <oleg@gd.cs.CSUFresno.edu>.
+.PP
+Manual page by Heiko Schlittermann <heiko@lotte.sax.de>.

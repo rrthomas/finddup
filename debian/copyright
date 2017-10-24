@@ -1,0 +1,14 @@
+This is the Debian prepackaged version of perforate.
+
+This package was put together by Michael Meskes <meskes@debian.org> from
+sources obtained from gd.cs.CSUFresno.EDU:/pub/sun4bin/src, and subsequently
+maintained by Heiko Schlittermann <heiko@lotte.sax.de>.
+
+You may use, distribute and copy this program according to the terms of the
+GNU General Public License version 2 or later.
+
+On Debian systems, the complete text of the GNU General Public License
+(Version 2.0) can be found in /usr/share/common-licenses/GPL .
+
+Michael Meskes <meskes@debian.org> Wed May 29 13:52:27 MET DST 1996
+Heiko Schlittermann <heiko@lotte.sax.de> Wed Sep 11 00:28:41 MET DST 1996

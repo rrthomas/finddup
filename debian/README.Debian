@@ -1,0 +1,5 @@
+Warning to lilo users:
+
+If you zum under /boot, where your kernel image lives, your system will become
+unbootable unless you run lilo again.
+

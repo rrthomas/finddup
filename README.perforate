@@ -12,21 +12,21 @@ or, if you want to process all files on your system (recommened), do:
 
 	find / -xdev -type f -print | zum
 
-	It should work find under  Linux. If it  runs  out of disk space  when
-processing files (it has to  make a copy  of each  before replacing it),  just
-Ctrl-C and delete  all  files that end  with  __zum__ (eq  find / -xdev  -name
-'*__zum__' -print | xargs rm).  After you free some space, it's safe to run it
-from the beginning  one more time.  Nevertheless shell scripts in this package
-modify your  files  and I am  not  responsible for anything that  might happen
+	It should work find under Linux. If it runs out of disk space when
+processing files (it has to make a copy of each before replacing it), just
+Ctrl-C and delete all files that end with __zum__ (eq find / -xdev -name
+'*__zum__' -print | xargs rm). After you free some space, it's safe to run it
+from the beginning one more time. Nevertheless shell scripts in this package
+modify your files and I am not responsible for anything that might happen
 (hey, you have source code!)
 
-	By  the  way, don't  try to do  this on   other UNIX varieties without
-preliminary investigation. For  example,  SunOS can't  boot from  vmlinux with
-holes (it's  Ok  to zum shared   libraries however, because  I unlink programs
+	By the way, don't try to do this on other UNIX varieties without
+preliminary investigation. For example, SunOS can't boot from vmlinux with
+holes (it's Ok to zum shared libraries however, because I unlink programs
 before overwriting them).
 
-	While I was    at  it, I wrote    some   more scripts  to  save   disk
-space. finddup  finds all the duplicate files  in a subtree rooted  in current
+	While I was at it, I wrote some more scripts to save disk
+space. finddup finds all the duplicate files in a subtree rooted in current
 directory. Run it as:
 
 	
@@ -34,7 +34,7 @@ directory. Run it as:
 	/some/dir/finddup > /tmp/duplist
 
 	
-	It takes quite a while to run. At  the end, /tmp/duplist has groups of
+	It takes quite a while to run. At the end, /tmp/duplist has groups of
 duplicate files sorted in the order of decreasing size (so you can look at the
 most interesting ones first). They can be merged with hard links:
 
@@ -42,29 +42,29 @@ most interesting ones first). They can be merged with hard links:
 	/some/dir/nodup < /tmp/duplist
 
 
-	However you shouldn't merge all of  them. Instead edit the duplist and
-see what they  are.    For example, /root/.zshenv  and   /home/snowcat/.zshenv
-shouldn't be merged even if  they are identical, because  in future I may want
-to   edit my  .zshenv  without  changing   root's setup. Likewise,  don't link
+	However you shouldn't merge all of them. Instead edit the duplist and
+see what they are. For example, /root/.zshenv and /home/snowcat/.zshenv
+shouldn't be merged even if they are identical, because in future I may want
+to edit my .zshenv without changing root's setup. Likewise, don't link
 /etc/nntpserver and /usr/adm/messages even if both consist of a single newline
 character. 
 
-	Finally,  findstrip will find all unstripped  files  and write them to
-stdout, line by line.  Remember that you can  strip only real executables, but
-not shared  libraries, objects and some other  things like .do files in Andrew
-toolkit. findstrip filters out everything I know  about, but if you don't edit
+	Finally, findstrip will find all unstripped files and write them to
+stdout, line by line. Remember that you can strip only real executables, but
+not shared libraries, objects and some other things like .do files in Andrew
+toolkit. findstrip filters out everything I know about, but if you don't edit
 the list before stripping it, you are quite likely to get in trouble.
 
 
 	On full Slackware 2.2 distribution (w/o Tex), these 3 scripts together
 can save about 15M. It may be not much but at least it's free and doesn't have
-any performance  penalty :)    Anyone  willing to  include  them  as  part  of
+any performance penalty :) Anyone willing to include them as part of
 installation process?
 
 	Also, it's useful to make holes in files on rescue floppies.
 
 				Oleg Kibirev <oleg@gd.cs.CSUFresno.EDU>
 
-PS:  tzx is covered  by GPL unless someone can  give  me a compeling reason to
+PS: tzx is covered by GPL unless someone can give me a compeling reason to
 relax restrictions.
 

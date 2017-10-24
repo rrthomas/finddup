@@ -2,6 +2,13 @@
  * zum 1.00 - free more disk space by making holes in files.
  *
  * Oleg Kibirev * April 1995 * oleg@gd.cs.CSUFresno.EDU
+ * 2005-11-11: Wouter Verhelst <wouter@debian.org>: clean up the code a bit (so
+ * 	that it no longer produces any warnings, add large file support.
+ *
+ * 2006-03-10: Arnaud Fontaine <arnau@hurdfr.org>: replace fgets by
+ * getline in main function (we use dynamic memory allocation instead
+ * of MAXPATHLEN macro which doesn't exist on Debian GNU/Hurd and
+ * optional in POSIX).
  *
  * This code is covered by General Public License, version 2 or any later
  * version of your choice. You should recieve file "COPYING" which contains
@@ -9,7 +16,12 @@
  * have it, a copy is available from ftp.gnu.ai.mit.edu.
  */
 
+#define _FILE_OFFSET_BITS 64
+#define _LARGEFILE_SOURCE
+#define _GNU_SOURCE
+
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>
@@ -20,15 +32,67 @@
 #include <utime.h>
 #include <alloca.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 extern int errno;
 
+/* GLibc provides getline, which allocate automatically the right
+   amount for the line, read by *stream. If not available, use
+   ours. */
+#ifdef __GLIBC__
+# define my_getline getline
+#else
+# define GETLINE_CHUNK_SIZE 4096
+
+static ssize_t my_getline(char **lineptr, size_t *n, FILE *stream)
+{
+  if(lineptr == NULL || n == NULL)
+    {
+      errno = EINVAL;
+      return -1;
+    }
+
+  if(*n == 0)
+    {
+      *lineptr = malloc(sizeof (char *) * GETLINE_CHUNK_SIZE);
+      *n = GETLINE_CHUNK_SIZE;
+    }
+
+  char *ret = fgets (*lineptr, *n, stream);
+  while(ret != NULL && (*lineptr)[strlen (*lineptr) - 1] != '\n')
+    {
+      *n += GETLINE_CHUNK_SIZE;
+      *lineptr = realloc(*lineptr, sizeof (char *) * *n);
+
+      ret = fgets(*lineptr + strlen (*lineptr), GETLINE_CHUNK_SIZE, stream);
+    }
+
+  return (ret ? strlen (*lineptr) : -1);
+}
+#endif /* !__GLIBC__ */
+
 static char suffix[] = "__zum__";
 
-static int zero_copy(int fds, int fdd, int size)
+static void* my_mmap(void *ptr, int fd, off_t size, off_t *pos)
+{
+  if(size-(*pos) > (off_t)1<<30) {
+    size=1<<30;
+  } else {
+    size=size-(*pos);
+  }
+  if(ptr)
+    munmap(ptr, 1<<30);
+  ptr=mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, (*pos));
+  (*pos)+=size;
+  return ptr;
+}
+
+static int zero_copy(int fds, int fdd, off_t size)
 {
   char *ms;
   char *bp, *p, *ep;
+  off_t pos=0;
+  int offset;
   
   lseek(fdd, 0L, SEEK_SET);
   if(ftruncate(fdd, 0) < 0) {
@@ -36,23 +100,33 @@ static int zero_copy(int fds, int fdd, int size)
     return -1;
   }
   
-  if((ms = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fds, 0)) == -1) {
+  offset = (size > 1<<30) ? 1<<30 : size;
+  if((ms = my_mmap(NULL, fds, size, &pos)) == MAP_FAILED) {
     perror("mmap");
     return -1;
   }
 
-  p = ms; ep = ms + size;
+  p = ms; ep = ms + offset;
   
   while(p < ep) {
     for(bp = p; p < ep && *p; p++);
     if(p != bp && write(fdd, bp, p-bp) != p-bp) {
 	perror("write");
-	munmap(ms, size);
+	munmap(ms, offset);
 	return -1;
       }
     for(bp = p; p < ep && !*p; p++);
     if(p != bp)
       lseek(fdd, p-bp, SEEK_CUR);
+    if((p == ep) && (size > 1<<30) && (size != pos)) {
+      offset = ((size - pos) > 1<<30) ? 1<<30 : (size - pos);
+      if((ms = my_mmap(ms, fds, size, &pos)) == MAP_FAILED) {
+	perror("mmap");
+	return -1;
+      } else {
+	p = ms; ep = ms + offset;
+      }
+    }
   }
   munmap(ms, size);
   return ftruncate(fdd, size);
@@ -102,7 +176,7 @@ static void zero_unmap(char *file)
     return;
   }
 
-  printf(" [%uK] ", (st.st_blocks-std.st_blocks)*st.st_blksize/1024);
+  printf(" [%uK] ", (unsigned int)((st.st_blocks-std.st_blocks)*st.st_blksize/1024));
   fflush(stdout);
 
   if(st.st_nlink == 1) {
@@ -141,17 +215,21 @@ static void zero_unmap(char *file)
   }
 }
 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   char *p;
 
   if(argc > 1)
-    while(p = *(++argv))
+    while((p = *(++argv)))
       zero_unmap(p);
   else {
-    char buf[MAXPATHLEN];
-    while(gets(buf))
+    char *buf = NULL;
+    size_t len = 0;
+    while(my_getline(&buf, &len, stdin) != -1)
       zero_unmap(buf);
+    
+    if (buf)
+      free(buf);
   }
   return 0;
 }
