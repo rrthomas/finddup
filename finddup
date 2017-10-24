@@ -198,22 +198,4 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 S<Klaus Ethgen E<lt>Klaus@Ethgen.de<gt>>
 
-=head1 HISTORY
-
- $Log: finddup,v $
- Revision 2.3  2005/02/06 18:57:42  klaus
- * Make --oldresult faster by not calculating the md5sum again
- * Fix a but that with --oldresult no links will be done cause the internal
-   datastructure
- * Do handle errors in open for md5sum calculation
-
- Revision 2.2  2005/02/06 12:21:02  klaus
- Little but important bug in link routine.
-
- Revision 2.1  2005/02/05 18:43:11  klaus
- Just cosmetic
-
- Revision 2.0  2005/02/05 18:41:20  klaus
- Completely new version
-
 =cut
