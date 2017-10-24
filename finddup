@@ -176,7 +176,8 @@ If run as nodup or nodup.pl the script will act as if started with options --lin
 
 =head1 COPYRIGHT
 
-Copyright (c) 2005 by Klaus Ethgen. All rights reserved.
+Copyright (c) 2005 Klaus Ethgen.
+Copyright (c) 2017 Reuben Thomas.
 
 =head1 LICENSE
 
@@ -197,5 +198,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =head1 AUTHOR
 
 S<Klaus Ethgen E<lt>Klaus@Ethgen.de<gt>>
+S<Reuben Thomas E<lt>rrt@sc3d.org<gt>>
 
 =cut
