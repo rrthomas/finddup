@@ -9,7 +9,7 @@ Homepage: http://perforate-linux.sf.net
 
 Package: perforate
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, libjson-perl
 Description: Utilities to save disk space
  GNU cp used to detect files that contain 0-filled holes and save disk space
  by skipping them with lseek when writing a file and thus not allocating

@@ -13,6 +13,11 @@ use Digest::MD5;
 use Getopt::Long;
 use Pod::Usage;
 
+use JSON; # Requires 3rd-party JSON library, but allows distros to
+          # automagically substitute JSON::XS for JSON::PP for better
+          # performance
+
+
 # for the convenience of &wanted calls, including -eval statements:
 use vars qw(*name *dir *prune);
 *name   = *File::Find::name;
@@ -24,7 +29,7 @@ use vars qw($RCS_VERSION $VERSION @dir $opt %filelist %md5list);
 sub wanted;
 sub insert_md5;
 
-GetOptions($opt = {}, qw(help|h man version noaction|n ignore-perms|i verbose|v quiet|q link|l oldresult|o dir=s@)) || pod2usage 2;
+GetOptions($opt = {}, qw(help|h man version noaction|n ignore-perms|i json verbose|v quiet|q link|l oldresult|o dir=s@)) || pod2usage 2;
 pod2usage(1) if $opt->{help};
 pod2usage(-exitstatus => 0, -verbose => 2) if $opt->{man};
 if ($opt->{version}) { print "Version: $VERSION\n"; exit 0; }
@@ -41,10 +46,17 @@ if ($opt->{oldresult}) {
    while (<>)
    {
       chomp;
-      s/^(\d+) '//;
-      my $size = $1;
-      s/'$//;
-      my @files = split(/' '/);
+      my ($size, @files);
+      if ($opt->{json}) {
+         my $jsonval = decode_json($_);
+         $size = @{$jsonval}[0];
+         @files = @{$jsonval}[1..-1];
+      } else {
+         s/^(\d+) '//;
+         $size = $1;
+         s/'$//;
+         @files = split(/' '/);
+      }
       $md5list{$md5++} = [[$size, 0, 0, 0, \@files]];
    }
 } else {
@@ -88,7 +100,13 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
 	 foreach (@{$md5list{$_}}) {
             push @output, $_ foreach @{$_->[4]};
 	 }
-	 print "\n" unless $opt->{quiet};
+         if ($opt->{json}) {
+            print encode_json([$size, @output]);
+         } else {
+            print $size;
+            print " '$_'" foreach @output;
+         }
+         print "\n";
       }
    }
 }
@@ -134,6 +152,7 @@ B<finddup> [I<options>...]
      --version          the version of the program
  -n, --noaction         do just nothing, just print out (implies -v)
  -v, --verbose          just what the name says
+     --json             output/input JSON
  -q, --quiet            be quiet
  -l, --link	        link the identical files together
  -o, --oldresult        Use the old output of this script
