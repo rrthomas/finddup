@@ -80,7 +80,7 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
       if ($opt->{link})
       {
 	 my $reffile = shift @{$md5list{$_}->[0]->[4]}; # Remove the first file to not unlink them
-	 print "Länge: $size Files:\t$reffile\n" if $opt->{verbose};
+	 print "Length: $size Files:\t$reffile\n" if $opt->{verbose};
 	 foreach (@{$md5list{$_}})
 	 {
 	    foreach (@{$_->[4]})
@@ -88,8 +88,8 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
 	       print "\t\t\t$_\n" if $opt->{verbose};
 	       unless ($opt->{noaction})
 	       {
-		  unlink $_ || die "Fehler beim Löschen von '$_'";
-		  link $reffile, $_ || die "Fehler beim ln '$reffile' '$_'";
+		  unlink $_ || die "Error deleting '$_'";
+		  link $reffile, $_ || die "Error in ln '$reffile' '$_'";
 	       }
 	    }
 	 }
