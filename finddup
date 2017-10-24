@@ -49,8 +49,8 @@ if ($opt->{oldresult})
       s/'$//;
       my @files = split(/' '/);
       $md5list{$md5++} = [[$size, 0, 0, 0, \@files]];
-   } # while (<>)
-} # if ($opt->{oldresult})
+   }
+}
 else
 {
    # Traverse desired filesystems
@@ -65,10 +65,10 @@ else
       insert_md5($prev) if $_->[0] == $prev->[0] || $prev->[0] == $prev2->[0];
       $prev2 = $prev;
       $prev = $_;
-   } # foreach (sort {$a->[1]->[0] cm...
+   }
    insert_md5($prev) if $prev->[0] == $prev2->[0];
    %filelist = ();
-} # if ($opt->{oldresult}) { ... }...
+}
 
 # Now we can output doubles sorted by size
 foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list))
@@ -94,7 +94,7 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
 	    }
 	 }
 	 print "\n" if $opt->{verbose};
-      } # if ($opt->{link})
+      }
       else
       {
 	 print "$size" unless $opt->{quiet};
@@ -106,9 +106,9 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
 	    }
 	 }
 	 print "\n" unless $opt->{quiet};
-      } # if ($opt->{link}) { ... } else
-   } # if ($size) # Do not output emp...
-} # foreach (keys(%md5list))
+      }
+   }
+}
 
 exit 0;
 
