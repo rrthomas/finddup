@@ -11,10 +11,11 @@ Package: perforate
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, libjson-perl
 Description: Utilities to save disk space
- GNU cp used to detect files that contain 0-filled holes and save disk space
- by skipping them with lseek when writing a file and thus not allocating
- disk blocks. Unfortunately it does no longer. So here is program to make
- holes in existing files.
+ finddup finds duplicate files, and optionally hard-links them together to
+ save space.
  .
- Also there are some scripts that help cleaning up the hard disk
- (finding duplicated and/or unstripped files).
+ findstrip finds unstripped binaries.
+ .
+ zum attempts to replace blocks of zero bytes in files with calls to
+ lseek(2), thus allowing the file system not to allocate space for those
+ bytes.
