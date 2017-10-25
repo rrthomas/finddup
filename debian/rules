@@ -30,7 +30,7 @@ binary-arch: build
 	dh_installdirs usr/bin
 	install finddup findstrip zum debian/perforate/usr/bin
 	dh_installdocs README.perforate
-	dh_installman debian/*.1
+	dh_installman *.1
 	dh_installchangelogs
 	dh_strip
 	dh_compress
