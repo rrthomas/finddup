@@ -31,8 +31,6 @@ binary-arch: build
 	install finddup findstrip zum debian/perforate/usr/bin
 	dh_installdocs README.perforate
 	dh_installman debian/*.1
-	dh_link usr/bin/finddup usr/bin/nodup
-	dh_link usr/share/man/man1/finddup.1.gz usr/share/man/man1/nodup.1.gz
 	dh_installchangelogs
 	dh_strip
 	dh_compress

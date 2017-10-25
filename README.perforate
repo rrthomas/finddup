@@ -25,11 +25,11 @@ directory. Run it as:
 	
 	It can take quite a while to run. At the end, /tmp/duplist has
 groups of duplicate files sorted in the order of decreasing size (so you can
-look at the most interesting ones first). They can be merged with hard
-links:
+look at the most interesting ones first).  The output can be turned into
+shell commands to merge links, and fed to the shell:
 
 	cd /
-	nodup < /tmp/duplist
+	finddup -o -c < /tmp/duplist | sh
 
 	However you shouldn't merge all of them. Read the duplist and see
 what they are. For example, don't link /etc/nntpserver and /usr/adm/messages

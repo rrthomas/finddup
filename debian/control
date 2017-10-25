@@ -9,10 +9,11 @@ Homepage: https://github.com/rrthomas/perforate
 
 Package: perforate
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libjson-perl
+Depends: ${misc:Depends}, ${shlibs:Depends}, libyaml-perl,
+ libfile-slurp-perl, libstring-shellquote-perl
 Description: Utilities to save disk space
- finddup finds duplicate files, and optionally hard-links them together to
- save space.
+ finddup finds duplicate files, and optionally writes shell commands to
+ hard-link them together.
  .
  findstrip finds unstripped binaries.
  .

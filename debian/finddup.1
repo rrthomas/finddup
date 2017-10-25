@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FINDDUP 1"
-.TH FINDDUP 1 "2017-10-24" "perl v5.22.1" "User Contributed Perl Documentation"
+.TH FINDDUP 1 "2017-10-25" "perl v5.22.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -144,30 +144,22 @@ finddup \- Find identical files and do something with them
 .IX Header "SYNOPSIS"
 \&\fBfinddup\fR [\fIoptions\fR...]
 .PP
-.Vb 11
-\&     \-\-man              the manpage
-\& \-h, \-\-help             a short help
-\&     \-\-version          the version of the program
-\& \-n, \-\-noaction         do just nothing, just print out (implies \-v)
-\& \-v, \-\-verbose          just what the name says
-\&     \-\-json             output/input JSON
-\& \-q, \-\-quiet            be quiet
-\& \-l, \-\-link             link the identical files together
-\& \-o, \-\-oldresult        Use the old output of this script
-\& \-i, \-\-ignore\-perms     Don\*(Aqt check that file owner and permissions match
-\& \-d, \-\-dir              Define the dir to check (you may specify more than one)
+.Vb 6
+\& \-h, \-\-help             show this help
+\&     \-\-version          show version information
+\& \-d, \-\-dir              specify a directory to check (more than one allowed)
+\& \-o, \-\-oldresult        use previous output of this script (on stdin)
+\& \-c, \-\-commands         output shell commands to link identical files together
+\& \-i, \-\-ignore\-perms     do not check that file owner and permissions match
 .Ve
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-finddup search the working directory and all files below on the same partition
-for duplicate files.
+finddup searches the working directory and all files below on the same
+partition for duplicate files.  Files of size 0 are ignored.
 .PP
-finddup can optionally hardlink such files to save space.
-.PP
-Files of size 0 will not be reported or hardlinked as this might cause problems.
-.PP
-If run as nodup or nodup.pl the script will act as if started with options \-\-link
-\&\-\-oldresult
+The duplicates found are listed, sorted in descending order of size, in \s-1YAML\s0
+format, for convenient further processing.  Optionally, shell commands to
+hard-link identical files together can be output instead.
 .SH "AUTHOR"
 .IX Header "AUTHOR"
 Copyright (c) 2005 Klaus\ Ethgen\ <Klaus@Ethgen.de<gt>
