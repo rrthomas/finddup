@@ -2,46 +2,33 @@
 
 #export DH_COMPAT=5
 
-CFLAGS := -O2 -Wall
-ifneq ($(findstring debug,$(DEB_BUILD_OPTIONS)),)
-CFLAGS += -g
-endif
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-INSTALL_PROGRAM += -s
-endif
-
 clean:
 	dh_testdir
 	dh_testroot
-	dh_clean build.stamp zum
+	dh_clean build.stamp finddup.1
 
 build: build.stamp
 build.stamp:
 	dh_testdir
-	$(MAKE) CFLAGS="$(CFLAGS)" zum
+	pod2man finddup > finddup.1
 	> $@
 
-binary: binary-arch binary-indep
+binary: binary-indep
 
-binary-arch: build
+binary-indep: build
 	dh_testdir
 	dh_testroot
 	dh_clean
 	dh_installdirs usr/bin
 	install finddup findstrip zum debian/perforate/usr/bin
 	dh_installdocs README
-	pod2man finddup > finddup.1
 	dh_installman *.1
 	dh_installchangelogs
-	dh_strip
 	dh_compress
 	dh_fixperms
 	dh_installdeb
-	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
-binary-indep: build
-
-.PHONY: clean build binary binary-arch binary-indep
+.PHONY: clean build binary binary-indep

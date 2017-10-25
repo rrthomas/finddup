@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+#
+# zum 2.00 - free more disk space by making holes in files.
+#
+# Oleg Kibirev oleg@gd.cs.CSUFresno.EDU, April 1995 (original C version)
+# Reuben Thomas <rrt@sc3d.org>, October 2017 (Perl version)
+
+use strict;
+use warnings;
+
+use Fcntl;
+use File::stat;
+use POSIX;
+
+
+my $suffix = "__zum__";
+
+sub zero_unmap {
+   my ($file) = @_;
+
+   my $st = lstat $file;
+   unless ($st) {
+      perror($file);
+      return;
+   }
+
+   unless (-f $file) {
+      warn "$file: not a regular file\n";
+      return;
+   }
+
+   print $file;
+
+   my $dest = sprintf("%s%s", $file, $suffix);
+
+   # Try to copy the file, and give up if we fail
+   system("cp", "-a", "--sparse=always", $file, $dest) == 0 or return;
+
+   # If we can't stat the new file, delete it and give up
+   my $dst;
+   unless ($dst = stat $dest) {
+      warn "$dest: cannot read file\n";
+      unlink $dest;
+      return;
+   }
+
+   # If new file is larger than old one, delete it and give up
+   if ($st->blocks <= $dst->blocks) {
+      unlink $dest;
+      print " [new file no smaller than old one!]\n";
+      return;
+   }
+   print sprintf " [saved %uK] ", ($st->blocks - $dst->blocks) * 512 / 1024;
+
+   # If old file has multiple hardlinks, copy new file over it; otherwise,
+   # move new file over it
+   if ($st->nlink == 1) {
+      print "[1 link]";
+      system("mv", "-f", $dest, $file) == 0 or return;
+   } else {
+      system("cp", "-a", "--sparse=always", $dest, $file) == 0 or return;
+      print "[>1 links]";
+      unlink $dest;
+   }
+   print "\n";
+}
+
+select STDOUT; # Make stdout unbuffered, so partial output lines
+$| = 1;        # appear before long copies/moves are complete
+
+if ($#ARGV >= 0) {
+   zero_unmap($_) foreach @ARGV;
+} else {
+   zero_unmap($_) while <>;
+}
