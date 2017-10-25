@@ -118,18 +118,21 @@ static void zero_unmap(char *file)
   if((fdd = open(dest, O_RDWR|O_CREAT|O_EXCL, 0600)) < 0) {
     perror(dest);
     return;
-   }
+  }
 
+  /* Try to copy the file, and give up if we fail */
   if(zero_copy(fds, fdd, st.st_size) < 0)
     return;
 
+  /* If we can't stat the new file, give up */
   if(fstat(fdd, &std) < 0) {
     perror(dest);
     unlink(dest);
     return;
   }
 
-  if(std.st_blocks >=  st.st_blocks) {
+  /* Check new file is not larger than old one */
+  if(std.st_blocks >= st.st_blocks) {
     unlink(dest);
     putchar('\n');
     return;
