@@ -28,7 +28,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <utime.h>
-#include <alloca.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -97,7 +96,6 @@ static int zero_copy(int fds, int fdd, off_t size)
 static void zero_unmap(char *file)
 {
   static int fds = -1, fdd = -1;
-  char *dest;
   struct stat st, std;
 
   if(fds > 0) { close(fds); fds = -1; }
@@ -115,7 +113,7 @@ static void zero_unmap(char *file)
 
   fputs(file, stdout); fflush(stdout);
 
-  dest = alloca(strlen(file) + sizeof(suffix));
+  char dest[strlen(file) + sizeof(suffix)];
   sprintf(dest, "%s%s", file, suffix);
   if((fdd = open(dest, O_RDWR|O_CREAT|O_EXCL, 0600)) < 0) {
     perror(dest);
