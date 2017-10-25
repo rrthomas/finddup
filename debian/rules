@@ -18,7 +18,7 @@ clean:
 build: build.stamp
 build.stamp:
 	dh_testdir
-	$(MAKE) CFLAGS="$(CFLAGS)"
+	$(MAKE) CFLAGS="$(CFLAGS)" zum
 	> $@
 
 binary: binary-arch binary-indep
