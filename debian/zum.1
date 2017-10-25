@@ -6,11 +6,16 @@ zum \- free disk space by making holes in files
 [\fIFILE\fR]...
 .SH DESCRIPTION
 .B zum
-reads a files list on the command line and attempts to perforate these files.
-Perforation means, that series of `0' bytes are replaced by
+takes a list of files as command-line arguments and attempts to perforate these files.
+Perforation means that series of NUL bytes are replaced by
 .BR lseek (2)s,
 thus giving the file system a chance of not allocating real disk space for
 those bytes.
+If no arguments are given,
+.B zum
+takes a list of files to perforate on
+.BR stdin,
+one per line.
 .SH EXAMPLE
 .IP
 .B find . -type f -print0 | xargs -0 zum
