@@ -111,7 +111,7 @@ static void zero_unmap(char *file)
     return;
   }
 
-  fputs(file, stdout); fflush(stdout);
+  fputs(file, stdout);
 
   char dest[strlen(file) + sizeof(suffix)];
   sprintf(dest, "%s%s", file, suffix);
@@ -131,12 +131,11 @@ static void zero_unmap(char *file)
 
   if(std.st_blocks >=  st.st_blocks) {
     unlink(dest);
-    putchar('\n'); fflush(stdout);
+    putchar('\n');
     return;
   }
 
   printf(" [%uK] ", (unsigned int)((st.st_blocks-std.st_blocks)*st.st_blksize/1024));
-  fflush(stdout);
 
   if(st.st_nlink == 1) {
     unlink(file);
@@ -144,7 +143,7 @@ static void zero_unmap(char *file)
       perror("rename");
       return;
     }
-    fputs(" [1 link]\n", stdout); fflush(stdout);
+    fputs(" [1 link]\n", stdout);
   } else {
     close(fds);
     if((fds = open(file, O_RDWR)) < 0) {
@@ -156,7 +155,7 @@ static void zero_unmap(char *file)
       return;
 
     unlink(dest);
-    fputs(" [many links]\n", stdout); fflush(stdout);
+    fputs(" [many links]\n", stdout);
   }
 
   /* 
@@ -177,6 +176,8 @@ static void zero_unmap(char *file)
 int main(int argc, char **argv)
 {
   char *p;
+
+  setbuf(stdout, NULL); /* Make stdout unbuffered */
 
   if(argc > 1)
     while((p = *(++argv)))
