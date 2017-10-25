@@ -2,13 +2,11 @@
  * zum 1.00 - free more disk space by making holes in files.
  *
  * Oleg Kibirev * April 1995 * oleg@gd.cs.CSUFresno.EDU
- * 2005-11-11: Wouter Verhelst <wouter@debian.org>: clean up the code a bit (so
- * 	that it no longer produces any warnings, add large file support.
- *
+ * 2005-11-11: Wouter Verhelst <wouter@debian.org>: cleanup
  * 2006-03-10: Arnaud Fontaine <arnau@hurdfr.org>: replace fgets by
- * getline in main function (we use dynamic memory allocation instead
- * of MAXPATHLEN macro which doesn't exist on Debian GNU/Hurd and
- * optional in POSIX).
+ * getline in main function
+ * 2017-10-25: Reuben Thomas <rrt@sc3d.org>: assume getline is available,
+ * as it's part of POSIX-1.2008.
  *
  * This code is covered by General Public License, version 2 or any later
  * version of your choice. You should recieve file "COPYING" which contains
@@ -33,43 +31,6 @@
 #include <alloca.h>
 #include <unistd.h>
 #include <stdlib.h>
-
-extern int errno;
-
-/* GLibc provides getline, which allocate automatically the right
-   amount for the line, read by *stream. If not available, use
-   ours. */
-#ifdef __GLIBC__
-# define my_getline getline
-#else
-# define GETLINE_CHUNK_SIZE 4096
-
-static ssize_t my_getline(char **lineptr, size_t *n, FILE *stream)
-{
-  if(lineptr == NULL || n == NULL)
-    {
-      errno = EINVAL;
-      return -1;
-    }
-
-  if(*n == 0)
-    {
-      *lineptr = malloc(sizeof (char *) * GETLINE_CHUNK_SIZE);
-      *n = GETLINE_CHUNK_SIZE;
-    }
-
-  char *ret = fgets (*lineptr, *n, stream);
-  while(ret != NULL && (*lineptr)[strlen (*lineptr) - 1] != '\n')
-    {
-      *n += GETLINE_CHUNK_SIZE;
-      *lineptr = realloc(*lineptr, sizeof (char *) * *n);
-
-      ret = fgets(*lineptr + strlen (*lineptr), GETLINE_CHUNK_SIZE, stream);
-    }
-
-  return (ret ? strlen (*lineptr) : -1);
-}
-#endif /* !__GLIBC__ */
 
 static char suffix[] = "__zum__";
 
@@ -225,7 +186,7 @@ int main(int argc, char **argv)
   else {
     char *buf = NULL;
     size_t len = 0;
-    while(my_getline(&buf, &len, stdin) != -1)
+    while(getline(&buf, &len, stdin) != -1)
       zero_unmap(buf);
     
     if (buf)
