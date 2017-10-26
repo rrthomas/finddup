@@ -128,17 +128,31 @@ B<finddup> [I<options>...]
 
 =head1 DESCRIPTION
 
-finddup searches the working directory and all files below on the same
-partition for duplicate files.  Files of size 0 are ignored.
+B<finddup> recursively searches the given directories for duplicate files,
+or the working directory if none is given.
+
+Files of size 0 are ignored.
 
 The duplicates found are listed, sorted in descending order of size, in YAML
 format, for convenient further processing.  Optionally, shell commands to
 hard-link identical files together can be output instead.
 
+=head1 EXAMPLE
+
+Run:
+
+	finddup -d / > /tmp/duplist.yaml
+
+It can take quite a while.  Check B<duplist.yaml>.  For example, perhaps
+B</etc/nntpserver> and B</usr/adm/messages> both consist of a single newline
+character.  Once you have edited B<duplist.yaml> to your satisfaction, run:
+
+	finddup -o -c < /tmp/duplist.yaml | sh
+
+This hard-links the identical files together.
+
 =head1 AUTHOR
 
-Copyright (c) 2005 S<Klaus Ethgen E<lt>Klaus@Ethgen.de<gt>>
-
-Copyright (c) 2017 S<Reuben Thomas E<lt>rrt@sc3d.org<gt>>
+Klaus Ethgen and Reuben Thomas.
 
 =cut

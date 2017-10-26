@@ -1,4 +1,4 @@
-.TH ZUM 1 "April 16, 2001" "Debian Project" "Debian Manual"
+.TH ZUM 1 "October 26, 2017" "Debian Project" "Debian Manual"
 .SH NAME
 zum \- free disk space by making holes in files
 .SH SYNOPSIS
@@ -6,22 +6,32 @@ zum \- free disk space by making holes in files
 [\fIFILE\fR]...
 .SH DESCRIPTION
 .B zum
-takes a list of files as command-line arguments and attempts to perforate these files.
-Perforation means that series of NUL bytes are replaced by
-.BR lseek (2)s,
-thus giving the file system a chance of not allocating real disk space for
-those bytes.
-If no arguments are given,
-.B zum
-takes a list of files to perforate on
-.BR stdin,
-one per line.
+attempts to make the given files sparse.
+A sparse file replaces long series of NUL bytes by a count.
+This works on most file systems, using \fBcp(1)\fR's \fB\-\-sparse\fR
+option.
+Note that since \fBzum\fR must make a copy of each file, some free space is
+needed for it to work.
+.PP
+If no arguments are given, \fBzum\fR takes a list of files to process on
+\fBstdin\fR, one per line.
 .SH EXAMPLE
 .IP
-.B find . -type f -print0 | xargs -0 zum
+find . -type f -print0 | xargs -0 zum
 .PP
-If you zum under /boot, where your kernel image lives, your system will become
-unbootable unless you run lilo again.
+.SH CAVEATS
+If you use LILO as your bootloader, and run \fBzum\fR on your kernel image,
+you must rerun lilo, or your system will be unbootable.
+.PP
+If \fBzum\fR runs out of disk space when processing files, just delete all
+files that end with \fB__zum__\fR:
+.IP
+find DIRECTORY -name '*__zum__' -delete
+.PP
+After you free some space, it's safe to run it from the beginning again.
+.SH SEE ALSO
+.BR cp (1),
+.BR finddup (1).
 .SH AUTHOR
 Oleg Kibirev <oleg@gd.cs.CSUFresno.edu>.
 .PP

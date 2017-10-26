@@ -1,45 +1,11 @@
-	GNU cp detects files that contain 0-filled holes and saves disk
-space by skipping them with lseek when writing a file and thus not allocating
-disk blocks. zum does the same for existing files. To use it, run
+perforate
+---------
 
-	zum file1 file2 ...
+A set of utilities to help save disk space.  Be careful: these programs
+modify your files!
 
-	If it runs out of disk space when processing files (it has to make a
-copy of each before replacing it), just Ctrl-C and delete all files that end
-with __zum__ (eq find / -xdev -name '*__zum__' -print | xargs rm). After you
-free some space, it's safe to run it from the beginning again. Nevertheless,
-shell scripts in this package modify your files and I am not responsible for
-anything that might happen (hey, you have source code!)
-
-	This works for all files on Linux systems; however, you should be
-careful on other operating systems: for example, SunOS can't boot from a
-kernel with holes (it's OK to zum shared libraries however, because it
-unlinks programs before overwriting them).
-
-	While I was at it, I wrote some more scripts to save disk
-space. finddup finds all the duplicate files in a subtree rooted in current
-directory. Run it as:
-	
-	cd /
-	finddup > /tmp/duplist
-	
-	It can take quite a while to run. At the end, /tmp/duplist has
-groups of duplicate files sorted in the order of decreasing size (so you can
-look at the most interesting ones first).  The output can be turned into
-shell commands to merge links, and fed to the shell:
-
-	cd /
-	finddup -o -c < /tmp/duplist | sh
-
-	However you shouldn't merge all of them. Read the duplist and see
-what they are. For example, don't link /etc/nntpserver and /usr/adm/messages
-even if both consist of a single newline character.
-
-	Finally, findstrip will find all unstripped files and write them to
-stdout, line by line. Remember that you can strip only real executables, but
-not shared libraries, objects and some other things like .do files in the
-Andrew toolkit. findstrip filters out everything I know about, but if you
-don't edit the list before stripping it, you are quite likely to get in
-trouble.
+These programs are distributed under the GNU General Public Licence version
+2, or, at your option, any later version.
 
 				Oleg Kibirev <oleg@gd.cs.CSUFresno.EDU>
+				Reuben Thomas <rrt@sc3d.org>

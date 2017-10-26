@@ -1,5 +1,6 @@
 Warning to lilo users:
 
-If you zum under /boot, where your kernel image lives, your system will become
-unbootable unless you run lilo again.
+If you use LILO as your bootloader, and run zum on your kernel image,
+you must rerun lilo, or your system will be unbootable.
 
+ -- Reuben Thomas <rrt@sc3d.org>, Thu, 26 Oct 2017 07:00:26 +0100
