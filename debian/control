@@ -9,7 +9,7 @@ Homepage: https://github.com/rrthomas/perforate
 
 Package: perforate
 Architecture: all
-Depends: ${misc:Depends}, libyaml-perl, libfile-slurp-perl,
+Depends: ${misc:Depends}, file, libyaml-perl, libfile-slurp-perl,
  libstring-shellquote-perl
 Description: Utilities to save disk space
  finddup finds duplicate files, and optionally writes shell commands to
