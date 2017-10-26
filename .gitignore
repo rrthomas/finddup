@@ -2,4 +2,4 @@ build.stamp
 debian/files
 debian/finddup.substvars
 debian/finddup/
-finddup.1
+/finddup.1
