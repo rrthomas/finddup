@@ -1,6 +1,6 @@
 finddup (2.0-1) unstable; urgency=low
 
-  * New upstream version. (Closes: #564302, #566998).
+  * New upstream version. (Closes: #564302, #566998, #449602).
       - Rewritten finddup either outputs YAML, for ease of
         processing, or shell commands to link duplicate files together.
       - There is no longer a nodup utility/mode.

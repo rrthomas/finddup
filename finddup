@@ -8,6 +8,7 @@ $VERSION = '3.0';
 use strict;
 use warnings;
 
+use POSIX;
 use File::Find ();
 use Digest::MD5;
 use Getopt::Long;
@@ -99,13 +100,16 @@ sub wanted {
 sub insert_md5 {
    my $file = shift;
    if (open(IN, "<", $file->[4]->[0])) {
-      my $md5 = Digest::MD5->new->addfile(*IN)->hexdigest;
-      $md5 .= "\t".$file->[1]."\t".$file->[2]."\t".$file->[3] unless $opt->{'ignore-perms'};
+      my $check = Digest::MD5->new;
+      my $data;
+      $check->add($data) while sysread(IN, $data, BUFSIZ);
       close IN;
+      my $md5 = $check->hexdigest;
+      $md5 .= "\t".$file->[1]."\t".$file->[2]."\t".$file->[3] unless $opt->{'ignore-perms'};
       $md5list{$md5} = [] unless exists $md5list{$md5};
       push @{$md5list{$md5}}, $file;
    } else {
-      warn "Cannot open file '" . $file->[4]->[0] . "'";
+      warn "cannot open file '" . $file->[4]->[0] . "'";
    }
 }
 
