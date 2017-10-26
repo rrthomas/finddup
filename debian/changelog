@@ -6,8 +6,9 @@ finddup (2.0-1) unstable; urgency=low
       - There is no longer a nodup utility/mode.
       - Zum now uses cp to make the file sparse.
       - Package renamed to reflect finddup being the main interest.
+      - New utility findcore.
 
- -- Reuben Thomas <rrt@sc3d.org>  Tue, 24 Oct 2017 23:13:01 +0100
+ -- Reuben Thomas <rrt@sc3d.org>  Thu, 26 Oct 2017 10:34:25 +0100
 
 perforate (1.2-5.1) unstable; urgency=medium
 

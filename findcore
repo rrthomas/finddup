@@ -1,0 +1,26 @@
+#!/bin/sh
+# findcore
+# Find core dumps (including from Valgrind)
+# (c) Reuben Thomas <rrt@sc3d.org> 5/4/2006-26/10/2017
+# This program is in the public domain
+
+# Start in current directory if no argument given
+if [ $# -lt 2 ]; then
+    set -- .
+fi
+
+# Regular expression matching a core file
+# N.B. Quoted for one level of expansion
+RE="/\\(vg\\)\\?core\\(\\.\\[0-9\\]\\+\\)\\?$"
+
+LOCATE_CMD="locate --null --existing --regexp '$RE'"
+# N.B. regex for find must match entire path; for locate, quicker if it doesn't
+FIND_CMD="find \"$@\" -regextype posix-basic -regex '.*$RE' -type f -print0"
+
+CMD=$FIND_CMD
+if [ "$1" = "--locate" ]; then
+    CMD=$LOCATE_CMD
+fi
+
+eval $CMD | \
+    xargs -L 1 --null --no-run-if-empty sh -c 'if test `file --brief --mime-type "$1"` = "application/x-coredump" ; then echo "$1"; fi' list
