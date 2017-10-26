@@ -1,4 +1,4 @@
-.TH FINDSTRIP 1 "April 16, 2001" "Debian Project" "Debian Manual"
+.TH FINDSTRIP 1 "April 16, 2001"
 .SH NAME
 findstrip \- find programs that are not stripped
 .SH SYNOPSIS
@@ -10,7 +10,7 @@ Files are considered unstripped if the output of
 .BR file (1)
 contains the string "no .*strip".
 .PP
-The output is a list of unstripped files, line by line.
+The output is a list of unstripped files, one per line.
 .SH CAVEATS
 Remember that you should strip only real executables, and not shared
 libraries, objects and some other things like \fB.do\fR files in the Andrew

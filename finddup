@@ -157,6 +157,6 @@ This hard-links the identical files together.
 
 =head1 AUTHOR
 
-Klaus Ethgen and Reuben Thomas.
+Klaus Ethgen <Klaus@Ethgen.de> and Reuben Thomas <rrt@sc3d.org>.
 
 =cut
