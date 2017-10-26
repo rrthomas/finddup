@@ -3,12 +3,11 @@
 findcore \- find core dumps
 .SH SYNOPSIS
 .B findcore
-.RI [ \-\-locate | DIRECTORY... ]
+.RI [ DIRECTORY... ]
 .SH DESCRIPTION
 .B findcore
 searches for core dumps (as identified by \fBfind\fR(1)) in the given directories.
-If no directory is given, the working directory is searched.
-If \fI\-\-locate\fR is given, \fBlocate(1)\fR is used instead of \fBfind(1)\fR.
+If no directory is given, \fBlocate(1)\fR is used instead of \fBfind(1)\fR.
 .PP
 The output is a list of core dump files, one per line.
 .SH CAVEATS
