@@ -65,18 +65,18 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
    my $size = $md5list{$_}->[0]->[0];
    if ($size) { # Do not output zero-length files
       if ($opt->{commands}) {
-	 my $reffile = shift @{$md5list{$_}->[0]->[4]}; # Don't delete the first file!
-	 foreach (@{$md5list{$_}}) {
-	    foreach (@{$_->[4]}) {
+         my $reffile = shift @{$md5list{$_}->[0]->[4]}; # Don't delete the first file!
+         foreach (@{$md5list{$_}}) {
+            foreach (@{$_->[4]}) {
                print "rm " . shell_quote($_) . "\n" .
                    "ln " . shell_quote($reffile) . " " . shell_quote($_) . "\n";
-	    }
-	 }
+            }
+         }
       } else {
          my @output;
-	 foreach (@{$md5list{$_}}) {
+         foreach (@{$md5list{$_}}) {
             push @output, $_ foreach @{$_->[4]};
-	 }
+         }
          push @filelists, {size => $size, files => \@output};
       }
    }
@@ -141,13 +141,13 @@ hard-link identical files together can be output instead.
 
 Run:
 
-	finddup -d / > /tmp/duplist.yaml
+        finddup -d / > /tmp/duplist.yaml
 
 It can take quite a while.  Check B<duplist.yaml>.  For example, perhaps
 B</etc/nntpserver> and B</usr/adm/messages> both consist of a single newline
 character.  Once you have edited B<duplist.yaml> to your satisfaction, run:
 
-	finddup -o -c < /tmp/duplist.yaml | sh
+        finddup -o -c < /tmp/duplist.yaml | sh
 
 This hard-links the identical files together.
 
