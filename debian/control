@@ -1,13 +1,15 @@
-Source: perforate
+Source: finddup
 Section: utils
 Priority: optional
 Maintainer: Amaya Rodrigo Sastre <amaya@debian.org>
-Uploaders: Hector Garcia <hector@debian.org>
+Uploaders: Hector Garcia <hector@debian.org>, Reuben Thomas <rrt@sc3d.org>
 Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 10)
-Homepage: https://github.com/rrthomas/perforate
+Homepage: https://github.com/rrthomas/finddup
 
-Package: perforate
+Package: finddup
+Replaces: perforate (<< 2.0-1~)
+Breaks: perforate (<< 2.0-1~)
 Architecture: all
 Depends: ${misc:Depends}, file, libyaml-perl, libfile-slurp-perl,
  libstring-shellquote-perl
@@ -20,3 +22,11 @@ Description: Utilities to save disk space
  zum attempts to replace blocks of zero bytes in files with calls to
  lseek(2), thus allowing the file system not to allocate space for those
  bytes.
+
+Package: perforate
+Depends: finddup, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: Utilities to save disk space (transitional package)
+  This is a transitional package. It can safely be removed.

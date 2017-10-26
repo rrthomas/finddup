@@ -1,5 +1,5 @@
 build.stamp
 debian/files
-debian/perforate.substvars
-debian/perforate/
+debian/finddup.substvars
+debian/finddup/
 finddup.1

@@ -20,7 +20,7 @@ binary-indep: build
 	dh_testroot
 	dh_clean
 	dh_installdirs usr/bin
-	install finddup findstrip zum debian/perforate/usr/bin
+	install finddup findstrip zum debian/finddup/usr/bin
 	dh_installdocs README
 	dh_installman *.1
 	dh_installchangelogs

@@ -1,4 +1,4 @@
-perforate (2.0-1) unstable; urgency=low
+finddup (2.0-1) unstable; urgency=low
 
   * New upstream version. (Closes: #564302, #566998).
       - Rewritten finddup either outputs YAML, for ease of
