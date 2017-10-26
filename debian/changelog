@@ -1,9 +1,11 @@
 finddup (2.0-1) unstable; urgency=low
 
-  * New upstream version. (Closes: #564302, #566998, #449602).
+  * New upstream version. (Closes: #564302, #566998, #449602, #406096).
       - Rewritten finddup either outputs YAML, for ease of
         processing, or shell commands to link duplicate files together.
       - There is no longer a nodup utility/mode.
+      - Zum now uses cp to make the file sparse.
+      - Package renamed to reflect finddup being the main interest.
 
  -- Reuben Thomas <rrt@sc3d.org>  Tue, 24 Oct 2017 23:13:01 +0100
 
