@@ -1,34 +1,8 @@
 #!/usr/bin/make -f
 
-#export DH_COMPAT=5
+%:
+	dh $@ --with autoreconf
 
-clean:
-	dh_testdir
-	dh_testroot
-	dh_clean build.stamp finddup.1
-
-build: build.stamp
-build.stamp:
-	dh_testdir
-	pod2man finddup > finddup.1
-	> $@
-
-binary: binary-indep
-
-binary-indep: build
-	dh_testdir
-	dh_testroot
-	dh_clean
-	dh_installdirs usr/bin
-	install finddup findstrip zum debian/finddup/usr/bin
-	dh_installdocs README
-	dh_installman *.1
-	dh_installchangelogs
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-.PHONY: clean build binary binary-indep
+# Following needed because we have multiple binary packages
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/finddup

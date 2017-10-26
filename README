@@ -1,5 +1,9 @@
-finddup
--------
+				  finddup
+				  -------
+
+		  Oleg Kibirev <oleg@gd.cs.CSUFresno.EDU>
+			Reuben Thomas <rrt@sc3d.org>
+
 
 A set of utilities to help save disk space.  Be careful: these programs
 modify your files!
@@ -7,5 +11,11 @@ modify your files!
 These programs are distributed under the GNU General Public Licence version
 2, or, at your option, any later version.
 
-				Oleg Kibirev <oleg@gd.cs.CSUFresno.EDU>
-				Reuben Thomas <rrt@sc3d.org>
+To install finddup, you need autoconf, automake and make. Run:
+
+    autoreconf -i
+    ./configure && make install
+
+For more options, run:
+
+    ./configure --help
