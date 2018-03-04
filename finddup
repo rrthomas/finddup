@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#!/usr/bin/perl
 #
 # finddup - find identical files and do something with them.
 #
@@ -148,7 +148,7 @@ Run:
         finddup -d / > /tmp/duplist.yaml
 
 It can take quite a while.  Check B<duplist.yaml>.  For example, perhaps
-B</etc/nntpserver> and B</usr/adm/messages> both consist of a single newline
+B</etc/nntpserver> and B</var/log/apport.log> both consist of a single newline
 character.  Once you have edited B<duplist.yaml> to your satisfaction, run:
 
         finddup -o -c < /tmp/duplist.yaml | sh

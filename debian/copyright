@@ -1,16 +1,30 @@
-This is the Debian prepackaged version of perforate.
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: finddup
+Source: <https://github.com/rrthomas/finddup>
 
-This package was put together by Michael Meskes <meskes@debian.org> from
-sources obtained from gd.cs.CSUFresno.EDU:/pub/sun4bin/src, and subsequently
-maintained by Heiko Schlittermann <heiko@lotte.sax.de>.
+Files: *
+Copyright: 2017-2018 Reuben Thomas <rrt@sc3d.org>
+           2005 Klaus Ethgen <Klaus@Ethgen.de>
+           1995 Oleg Kibirev <oleg@gd.cs.csufresno.edu>
+License: GPL-2.0+
 
-finddup was rewritten by Klaus Ethgen <Klaus@Ethgen.de> in 2005.
+Files: debian/*
+Copyright: 2018 Reuben Thomas <rrt@sc3d.org>
+License: GPL-2.0+
 
-You may use, distribute and copy this program according to the terms of the
-GNU General Public License version 2 or later.
-
-On Debian systems, the complete text of the GNU General Public License
-(Version 2.0) can be found in /usr/share/common-licenses/GPL .
-
-Michael Meskes <meskes@debian.org> Wed May 29 13:52:27 MET DST 1996
-Heiko Schlittermann <heiko@lotte.sax.de> Wed Sep 11 00:28:41 MET DST 1996
+License: GPL-2.0+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".

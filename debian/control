@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Amaya Rodrigo Sastre <amaya@debian.org>
 Uploaders: Hector Garcia <hector@debian.org>, Reuben Thomas <rrt@sc3d.org>
-Standards-Version: 3.9.8
+Standards-Version: 4.1.3
 Build-Depends: debhelper (>= 10)
 Homepage: https://github.com/rrthomas/finddup
 
@@ -26,7 +26,6 @@ Description: Utilities to save disk space
 Package: perforate
 Depends: finddup, ${misc:Depends}
 Architecture: all
-Priority: optional
 Section: oldlibs
 Description: Utilities to save disk space (transitional package)
-  This is a transitional package. It can safely be removed.
+ This is a transitional package. It can safely be removed.
