@@ -14,4 +14,4 @@ RE="/\\(vg\\)\\?core\\(\\.\\[0-9\\]\\+\\)\\?$"
   else
       find "$@" -regextype posix-basic -regex ".*$RE" -type f -print0
   fi ) | \
-    xargs -L 1 --null --no-run-if-empty sh -c 'if test `file --brief --mime-type "$1"` = "application/x-coredump" ; then echo "$1"; fi' list
+    xargs -L 1 --null --no-run-if-empty sh -c 'if test "`file --brief --mime-type "$1"`" = "application/x-coredump" ; then echo "$1"; fi' list
