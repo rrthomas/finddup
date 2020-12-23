@@ -30,7 +30,7 @@ use vars qw($RCS_VERSION $VERSION @dir $opt %filelist %md5list);
 sub wanted;
 sub insert_md5;
 
-GetOptions($opt = {}, qw(help|h version dir=s@ oldresult|o commands|c ignore-perms|i)) || pod2usage 2;
+GetOptions($opt = {}, qw(help|h version dir=s@ oldresult|o commands|c symlink|s ignore-perms|i)) || pod2usage 2;
 pod2usage(1) if $opt->{help};
 if ($opt->{version}) { print "Version: $VERSION\n"; exit 0; }
 
@@ -65,12 +65,14 @@ foreach (sort {$md5list{$b}->[0]->[0] <=> $md5list{$a}->[0]->[0]} keys(%md5list)
    next unless @{$md5list{$_}} > 1 or $opt->{oldresult}; # This file is unique
    my $size = $md5list{$_}->[0]->[0];
    if ($size) { # Do not output zero-length files
+      my $symlink = "";
+      $symlink = "-s " if $opt->{symlink};
       if ($opt->{commands}) {
          my $reffile = shift @{$md5list{$_}->[0]->[4]}; # Don't delete the first file!
          foreach (@{$md5list{$_}}) {
             foreach (@{$_->[4]}) {
                print "rm " . shell_quote($_) . "\n" .
-                   "ln " . shell_quote($reffile) . " " . shell_quote($_) . "\n";
+                   "ln $symlink" . shell_quote($reffile) . " " . shell_quote($_) . "\n";
             }
          }
       } else {
@@ -128,6 +130,7 @@ B<finddup> [I<options>...]
  -d, --dir              specify a directory to check (more than one allowed)
  -o, --oldresult        use previous output of this script (on stdin)
  -c, --commands         output shell commands to link identical files together
+ -s, --symlink          use with --commands to generate symlinks
  -i, --ignore-perms     do not check that file owner and permissions match
 
 =head1 DESCRIPTION
@@ -139,7 +142,7 @@ Files of size 0 are ignored.
 
 The duplicates found are listed, sorted in descending order of size, in YAML
 format, for convenient further processing.  Optionally, shell commands to
-hard-link identical files together can be output instead.
+link identical files together can be output instead.
 
 =head1 EXAMPLE
 

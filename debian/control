@@ -15,7 +15,7 @@ Depends: ${misc:Depends}, file, libyaml-perl, libfile-slurp-perl,
  libstring-shellquote-perl
 Description: Utilities to save disk space
  finddup finds duplicate files, and optionally writes shell commands to
- hard-link them together.
+ link them together.
  .
  findstrip finds unstripped binaries.
  .
