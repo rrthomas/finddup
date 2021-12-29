@@ -1,14 +1,15 @@
-finddup (2.0-1) unstable; urgency=low
+finddup (2.1-1) unstable; urgency=low
 
   * New upstream version. (Closes: #564302, #566998, #449602, #406096).
       - Rewritten finddup either outputs YAML, for ease of
         processing, or shell commands to link duplicate files together.
+        Added option to make symlinks rather than hard links.
       - There is no longer a nodup utility/mode.
       - Zum now uses cp to make the file sparse.
       - Package renamed to reflect finddup being the main interest.
       - New utility findcore.
 
- -- Reuben Thomas <rrt@sc3d.org>  Sun, 04 Mar 2018 18:42:43 +0000
+ -- Reuben Thomas <rrt@sc3d.org>  Wed, 29 Dec 2021 17:45:32 +0000
 
 perforate (1.2-5.1) unstable; urgency=medium
 
