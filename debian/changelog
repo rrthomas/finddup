@@ -8,6 +8,9 @@ finddup (2.1-1) unstable; urgency=low
       - Zum now uses cp to make the file sparse.
       - Package renamed to reflect finddup being the main interest.
       - New utility findcore.
+  * debian/control:
+      - Bumped Standards-Version to 4.6.0.
+      - Update to debhelper 13.
 
  -- Reuben Thomas <rrt@sc3d.org>  Wed, 29 Dec 2021 17:45:32 +0000
 

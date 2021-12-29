@@ -3,8 +3,8 @@ Section: utils
 Priority: optional
 Maintainer: Amaya Rodrigo Sastre <amaya@debian.org>
 Uploaders: Hector Garcia <hector@debian.org>, Reuben Thomas <rrt@sc3d.org>
-Standards-Version: 4.1.3
-Build-Depends: debhelper (>= 10)
+Standards-Version: 4.6.0
+Build-Depends: debhelper (>= 13~), dh-autoreconf | debhelper-compat
 Homepage: https://github.com/rrthomas/finddup
 
 Package: finddup
